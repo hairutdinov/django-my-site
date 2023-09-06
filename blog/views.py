@@ -92,7 +92,10 @@ def posts(request):
 
 
 def post_detail(request, slug):
-    post = next(post for post in all_posts if post['slug'] == slug)
-    return render(request, 'blog/post-detail.html', {
-        'post': post,
-    })
+    try:
+        post = next(post for post in all_posts if post['slug'] == slug)
+        return render(request, 'blog/post-detail.html', {
+            'post': post,
+        })
+    except StopIteration:
+        raise Http404()
