@@ -10,6 +10,14 @@
 {% endblock %}
 
 {% block content %}
+    {% if comment_form.errors %}
+        <div id="alert">
+            <h2>Saving the comment failed!</h2>
+            <p>Please check the comment form below the post and fix your errors.</p>
+            <a href="#comment-form">Fix!</a>
+        </div>
+    {% endif %}
+
     <section id="summary">
         <h2>
             {{ post.title }}
