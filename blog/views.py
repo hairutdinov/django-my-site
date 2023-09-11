@@ -27,14 +27,28 @@ class PostsView(ListView):
     context_object_name = 'posts'
 
 
-class PostDetailPage(DetailView):
-    template_name = 'blog/post-detail.html'
-    model = Post
+class PostDetailPage(View):
+    def get(self, request, slug):
+        post = get_object_or_404(Post, slug=slug)
+        return render(request, 'blog/post-detail.html', {
+            'post': post,
+            'tags': post.tags.all(),
+            'comment_form': CommentForm(),
+        })
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        loaded_post = self.object
-        request = self.request
-        context['tags'] = loaded_post.tags.all()
-        context['comment_form'] = CommentForm()
-        return context
+    def post(self, request, slug):
+        post = get_object_or_404(Post, slug=slug)
+        form = CommentForm(request.POST)
+
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            print(form.cleaned_data)
+            comment.save()
+            return HttpResponseRedirect(reverse('post-detail', args=[slug]))
+
+        return render(request, 'blog/post-detail.html', {
+            'post': post,
+            'tags': post.tags.all(),
+            'comment_form': form,
+        })
