@@ -29,4 +29,19 @@
     <main>
         {{ post.content|linebreaks }}
     </main>
+
+    <section id="comment-form">
+        <h2>Your comment</h2>
+        <form action="" method="POST">
+            {% csrf_token %}
+            {% for field in comment_form %}
+                <div class="form-control {% if field.errors %}errors{% endif %}">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+            <button>Save comment</button>
+        </form>
+    </section>
 {% endblock %}

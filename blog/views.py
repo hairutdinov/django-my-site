@@ -6,6 +6,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView
 from .models import Post
+from .forms import CommentForm
 
 
 class StartingPageView(ListView):
@@ -35,4 +36,5 @@ class PostDetailPage(DetailView):
         loaded_post = self.object
         request = self.request
         context['tags'] = loaded_post.tags.all()
+        context['comment_form'] = CommentForm()
         return context
