@@ -33,6 +33,7 @@ class PostDetailPage(View):
         return render(request, 'blog/post-detail.html', {
             'post': post,
             'tags': post.tags.all(),
+            'comments': post.comments.all().order_by('-id'),
             'comment_form': CommentForm(),
         })
 
@@ -43,12 +44,12 @@ class PostDetailPage(View):
         if form.is_valid():
             comment = form.save(commit=False)
             comment.post = post
-            print(form.cleaned_data)
             comment.save()
             return HttpResponseRedirect(reverse('post-detail', args=[slug]))
 
         return render(request, 'blog/post-detail.html', {
             'post': post,
             'tags': post.tags.all(),
+            'comments': post.comments.all().order_by('-id'),
             'comment_form': form,
         })
