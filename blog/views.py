@@ -19,10 +19,10 @@ class StartingPageView(ListView):
         return data
 
 
-def posts(request):
-    return render(request, 'blog/posts.html', {
-        'posts': Post.objects.all(),
-    })
+class PostsView(ListView):
+    template_name = 'blog/posts.html'
+    model = Post
+    context_object_name = 'posts'
 
 
 def post_detail(request, slug):
