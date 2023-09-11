@@ -30,16 +30,20 @@ class PostsView(ListView):
 class PostDetailPage(View):
     def get(self, request, slug):
         post = get_object_or_404(Post, slug=slug)
+        stored_posts = request.session.get('stored_posts')
+
         return render(request, 'blog/post-detail.html', {
             'post': post,
             'tags': post.tags.all(),
             'comments': post.comments.all().order_by('-id'),
+            'stored_posts': stored_posts,
             'comment_form': CommentForm(),
         })
 
     def post(self, request, slug):
         post = get_object_or_404(Post, slug=slug)
         form = CommentForm(request.POST)
+        stored_posts = request.session.get('stored_posts')
 
         if form.is_valid():
             comment = form.save(commit=False)
@@ -51,5 +55,16 @@ class PostDetailPage(View):
             'post': post,
             'tags': post.tags.all(),
             'comments': post.comments.all().order_by('-id'),
+            'stored_posts': stored_posts,
             'comment_form': form,
         })
+
+
+class ReadLaterView(View):
+    def post(self, request):
+        stored_posts = set(request.session.get('stored_posts', []))
+        post_id = int(request.POST['post_id'])
+        stored_posts.add(post_id)
+        request.session['stored_posts'] = list(stored_posts)
+        print(stored_posts)
+        return HttpResponseRedirect('/')
