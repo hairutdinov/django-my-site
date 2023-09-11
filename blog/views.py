@@ -11,11 +11,12 @@ from .models import Post
 class StartingPageView(ListView):
     template_name = 'blog/index.html'
     model = Post
+    ordering = ['-date']
     context_object_name = 'posts'  # by default: object_list
 
     def get_queryset(self):
         base_query = super().get_queryset()
-        data = base_query.order_by('-date')[:3]
+        data = base_query[:3]
         return data
 
 
