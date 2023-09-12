@@ -27,17 +27,20 @@
                 <span class="tag">{{ tag.caption }}</span>
             {% endfor %}
         </div>
-        {% if post.id in stored_posts %}
-            <!-- #todo need to show smth if post already in Read Later list -->
-        {% else %}
-            <div id="read-later">
-                <form action="{% url 'read-later' %}" method="POST">
-                    {% csrf_token %}
-                    <input type="hidden" name="post_id" value="{{ post.id }}">
-                    <button>Read later</button>
-                </form>
-            </div>
-        {% endif %}
+        <div id="read-later">
+            <form action="{% url 'read-later' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="post_id" value="{{ post.id }}">
+                <button>
+                    {% if is_saved_for_later %}
+                        Remove from "Read Later" List
+                    {% else %}
+                        Read later
+                    {% endif %}
+                </button>
+            </form>
+        </div>
+
         <article>
             <img src="{{ post.image.url }}" alt="{{ post.title }}">
             <address>By <a href="mailto:{{ post.author.email }}">{{ post.author }}</a></address>
