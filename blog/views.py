@@ -61,10 +61,16 @@ class PostDetailPage(View):
 
 
 class ReadLaterView(View):
+    def get(self, request):
+        stored_posts = request.session.get('stored_posts', [])
+        return render(request, 'blog/stored-posts.html', {
+            'posts': Post.objects.filter(id__in=stored_posts).all(),
+            'has_posts': len(stored_posts) > 0,
+        })
+
     def post(self, request):
         stored_posts = set(request.session.get('stored_posts', []))
         post_id = int(request.POST['post_id'])
         stored_posts.add(post_id)
         request.session['stored_posts'] = list(stored_posts)
-        print(stored_posts)
         return HttpResponseRedirect('/')
